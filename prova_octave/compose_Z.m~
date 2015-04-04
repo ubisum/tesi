@@ -1,0 +1,6 @@
+function Z = compose_Z(Li, Lj, assoc)
+
+% prepare output
+Z = zeros(4, size(assoc, 1));
+
+endfunction

@@ -1,0 +1,31 @@
+function data = readFromFile(file)
+
+	% open file
+	fid = fopen (file, "r");
+	if(fid == -1)
+		disp("ERROR: can't read from requested file");
+		usage("ERROR: can't read from requested file");
+		%exit(-1);
+	endif
+
+	temp_data = [];
+
+	% reading loop
+	txt = fgetl(file);
+	while(txt != -1)
+		remn = txt;
+		vector = [];
+		while(length(remn) >0)
+			[tor remn] = strtok(remn, "\t");
+			vector = [vector str2double(tor)];
+		endwhile
+
+		temp_data = [temp_data; vector];
+		txt = fgetl(file);
+	endwhile
+
+	% close file
+	fclose(fid);
+
+	data = temp_data';
+endfunction
