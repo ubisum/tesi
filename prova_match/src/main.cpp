@@ -39,6 +39,8 @@ void printLines(vecPairsList Lines, int index)
     {
         // a line
         vecPair vp = Lines[counter];
+        Vector2f ex_1 = vp.first;
+        Vector2f ex_2 = vp.second;
 
         // line representation
         Vector4f lineRep = lineRepresentation(vp.first, vp.second);
@@ -51,7 +53,9 @@ void printLines(vecPairsList Lines, int index)
 
         // write to file
         ss_lines << lineRep(0)<<  "\t" << lineRep(1) << "\t" << lineRep(2) << "\t" << lineRep(3) << "\t" <<
-                    polar(0) << "\t" << polar(1) << "\n";
+                    polar(0) << "\t" << polar(1) << "\t" <<
+                    ex_1(0) << "\t" << ex_1(1) << "\t" <<
+                    ex_2(0) << "\t" << ex_2(1) << "\n";
         fputs(ss_lines.str().c_str(), fid);
 
     }
@@ -157,6 +161,7 @@ int main(int argv, char** argc)
         findPoses(ci);
         int first = 0;
         int second = 1;
+        selectLines(extractedLines);
 
         cout << "Differenze: " << "\n" << ci[first].position.first << "\t" << ci[second].position.first << "\t" <<
                 ci[second].position.first-ci[first].position.first << "\n" <<

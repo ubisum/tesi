@@ -24,14 +24,14 @@ function [assoc] = computeAssociations(dist, last2_thresh)
 				red_row_min = min(min(red_row));
 
 				% create association
-				if(red_row_min - min_row > last2_thresh)
+				if(red_row_min == inf || red_row_min - min_row > last2_thresh)
 					% association
 					assoc = [assoc; i min_index];
 				endif 
 			endif
 		endfor
-	else
-		assoc = [assoc; 1 1];
+	%else
+		%assoc = [assoc; 1 1];
 	endif
 
 endfunction

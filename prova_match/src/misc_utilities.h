@@ -2,7 +2,7 @@
 #define MISC_UTILITIES_H
 
 #include "matching_utilities.h"
-#define MIN_LINE_LENGTH 0.05*0.05
+#define MIN_LINE_LENGTH 0.1*0.1
 #define MIN_FRAME_DIST 0.1*0.1
 
 namespace utilities
@@ -103,6 +103,7 @@ vector<vecPairsList> selectLines(const vector<vecPairsList> lines)
         }
 
         selectedLines.push_back(new_vpl);
+        cout << "Remaining lines: " << new_vpl.size() << "/" << vpl.size() << endl;
     }
 
     return selectedLines;
