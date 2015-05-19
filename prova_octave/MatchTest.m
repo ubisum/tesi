@@ -2,16 +2,28 @@
 epsilon = 0.5;
 alpha = 0.5;
 last2_thresh = 0.1;
-angle_thresh = 0.05;
-rho_thresh = 0.3;
-iterations = 50;
+angle_thresh = 0.1;
+rho_thresh = 0.1;
+iterations = 10;
+max_dist_point = 0.2;
 e_max = 1;
 
 % read data
+% content of a column in Li or Lj:
+%
+% point_on_line_x
+% point_on_line_y
+% normal_x
+% normal_y
+% rho
+% angle
+% ex_1_x
+% ex_1_y
+% ex_2_x
+% ex_2_y
 Pi = readFromFile("convertedLines_0.txt");
 Pj = readFromFile("convertedLines_1.txt");
-size(Pi)
-size(Pj)
+%Pj = Pi;
 
 % initial homogeneous matrix
 T = eye(3);
@@ -29,14 +41,12 @@ assoc = [];
 % loop
 for i=1:iterations
 	% matrix of distances
-	size(Li)
-	size(Lj)
-	[dist, gamma_sqr] = computeDistanceError(Li, Lj, T, epsilon, alpha, e_max, angle_thresh, rho_thresh);
-	dist
+	[dist, gamma_sqr] = computeDistanceError(Li, Lj, T, epsilon, alpha, e_max, angle_thresh, rho_thresh, max_dist_point);
+	
 	
 
 	% associations
-	assoc = computeAssociations(dist, last2_thresh)
+	assoc = computeAssociations(dist, last2_thresh);
 
 	if(size(assoc, 1) < 5)
 		break;
@@ -44,10 +54,10 @@ for i=1:iterations
 
 	% new homogeneous matrix
 	%Z = [Li; Lj];
-	Z = compose_Z(Li, Lj, assoc)
+	Z = compose_Z(Li, Lj, assoc);
 	%size(Z)
 	[xnew, chiNew]=lsIteration_gamma(t2v(T),Z, epsilon, alpha, gamma_sqr);
-	T = v2t(xnew)
+	T = v2t(xnew);
 
 
 	% new matrices
@@ -95,27 +105,29 @@ delete('transf_pj.txt');
 fid_pj = fopen('transf_pj.txt','w');
 for cnt_pj=1:size(transf_pj, 2)
 	col_pj = transf_pj(:, cnt_pj);
-	size(col_pj)
 	fprintf(fid_pj, "%f\t%f\n%f\t%f\n\n", col_pj(1), col_pj(2), col_pj(3), col_pj(4));
 endfor
 
 fclose(fid_pj);
 
+printf("ASSOC\n");
 delete('assoc_list.txt');
 fid_assoc = fopen('assoc_list.txt', 'w');
-for ass_count=1:size(assoc, 1)
-	ass_couple = assoc(ass_count, :);
-	left_line = Li(7:10, ass_couple(1));
-	right_line = Lj(7:10, ass_couple(2));
+for ass_count=1:size(Li, 2)
+	left_line = Li(7:10, ass_count);
+	right_line = Lj(7:10, ass_count);
 
 	middle_point_i = 0.5*[left_line(1)+left_line(3) left_line(2)+left_line(4)];
 	middle_point_j = 0.5*[right_line(1)+right_line(3) right_line(2)+right_line(4)];
 
 	transf_mp_j = T*[middle_point_j'; 1];
-	fprintf(fid_assoc, "%f\t%f\n%f\t%f\n\n", middle_point_i(1), middle_point_i(2), transf_mp_j(1), transf_mp_j(2));
+	distance = [middle_point_i(1)-transf_mp_j(1) middle_point_i(2)-transf_mp_j(2)]*[middle_point_i(1)-transf_mp_j(1) middle_point_i(2)-transf_mp_j(2)]';
+	%if(distance<max_dist_point)
+		fprintf(fid_assoc, "%f\t%f\n%f\t%f\n\n", middle_point_i(1), middle_point_i(2), transf_mp_j(1), transf_mp_j(2));
+	%endif
 endfor
-
 fclose(fid_assoc);
+
 T
 printf("FATTO\n");
 

@@ -1,7 +1,6 @@
-function [dist, gamma_sq] = computeDistanceError(Li, Lj, T, epsilon, alpha, e_max, angle_thresh)
+function [dist, gamma_sq] = computeDistanceError(Li, Lj, T, epsilon, alpha, e_max, angle_thresh, rho_thresh, max_dist_point)
 
 % transform points
-size(Lj)
 Lj_transf = transformPoints(T, Lj(1:4, :));
 
 % output matrix
@@ -26,9 +25,18 @@ for i=1:size(Li, 2)
 		% compare angles
 		%size(Li)
 		%size(Lj)
-		if(abs(Li(6, i)-Lj(6, j)) > angle_thresh || abs(Li(5, i)-Lj(5, j)) > rho_thresh)
+		point_pi = Li(1:2, i);
+		point_pj = Lj(1:2, j);
+		point_pj_transf = T*([point_pj; 1]);
+		dist_pi_pj = (point_pi(1)-point_pj_transf(1))^2 + (point_pi(2)-point_pj_transf(2))^2;
+		if ((abs(Li(6, i)-Lj(6, j)) > angle_thresh) || 
+		   (abs(Li(5, i)-Lj(5, j)) > rho_thresh) 
+           ||  (dist_pi_pj>max_dist_point^2)
+		)
+
 			dist(i, j) = Inf;
 		else
+			dist_pi_pj
 			% compute error
 			error_ij = Li(1:4, i) - Lj_transf(1:4, j);
 
@@ -36,9 +44,9 @@ for i=1:size(Li, 2)
 			ls_error = error_ij'*sigma_ij*error_ij;
 
 			% update gamma, if necessary
-			if(ls_error > e_max && e_max/ls_error > gamma_sq)
-				gamma_sq = e_max/ls_error;
-			endif
+			%if(ls_error > e_max && e_max/ls_error > gamma_sq)
+				%gamma_sq = e_max/ls_error;
+			%endif
 
 			% set current distance
 			dist(i, j) = ls_error;
