@@ -4,7 +4,8 @@ function dist = computeDistanceRT(Li, Lj, T)
 dist = zeros(size(Li, 2), size(Lj, 2));
 
 % transform lines
-Lj_transf = transformRT(Lj, t2v(T));
+Li
+Lj_transf = transformRT(Lj, t2v(T))
 
 % compute distances
 for i=1:size(Li, 2)

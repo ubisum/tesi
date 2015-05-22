@@ -3,7 +3,7 @@ function [assoc] = computeAssociations(dist, last2_thresh)
 	% initialize output
 	assoc = [];
 	chosen = [];
-	dist
+	dist;
 
 	if (size(dist, 1) > 1)
 		for i=1:size(dist, 1)
@@ -26,7 +26,14 @@ function [assoc] = computeAssociations(dist, last2_thresh)
 				red_row_min = min(min(red_row));
 
 				% create association
-				if(red_row_min - min_row > last2_thresh)
+				ref_thresh = 0;
+				if(red_row_min == inf)
+					ref_thresh = min_row;
+				else
+					ref_thresh = red_row_min - min_row;
+				endif
+
+				if(ref_thresh < last2_thresh)
 					% association
 					assoc = [assoc; i min_index];
 					chosen = [chosen; min_row];
@@ -41,5 +48,5 @@ function [assoc] = computeAssociations(dist, last2_thresh)
 	%else
 		%assoc = [assoc; 1 1];
 	endif
-chosen
+
 endfunction
