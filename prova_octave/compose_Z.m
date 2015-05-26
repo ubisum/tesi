@@ -4,6 +4,10 @@ function Z = compose_Z(Li, Lj, assoc)
 Z = zeros(8, size(assoc, 1));
 
 % fill output 
+%size(Li)
+%size(Lj)
+%size(assoc)
+assoc
 for i=1:size(assoc, 1)
 	assoc_row = assoc(i, :);
 	Z(1:4, i) = Li(1:4, assoc_row(1));

@@ -2,6 +2,9 @@ function [dist, gamma_sq] = computeDistanceError(Li, Lj, T, epsilon, alpha, e_ma
 
 % transform points
 Lj_transf = transformPoints(T, Lj(1:4, :));
+Lj_transf_RT = transformRT(Lj(5:6, :), t2v(T));
+size(Lj)
+size(Lj_transf_RT)
 
 % output matrix
 dist = zeros(size(Li, 2), size(Lj, 2));
@@ -29,16 +32,20 @@ for i=1:size(Li, 2)
 		point_pj = Lj(1:2, j);
 		point_pj_transf = T*([point_pj; 1]);
 		dist_pi_pj = (point_pi(1)-point_pj_transf(1))^2 + (point_pi(2)-point_pj_transf(2))^2;
-		if ((abs(Li(6, i)-Lj(6, j)) > angle_thresh) || 
-		   (abs(Li(5, i)-Lj(5, j)) > rho_thresh) ||
-           (dist_pi_pj>max_dist_point^2)
-		)
+		%if ((abs(Li(6, i)-Lj(6, j)) > angle_thresh) || 
+		%   (abs(Li(5, i)-Lj(5, j)) > rho_thresh) ||
+        %   (dist_pi_pj>max_dist_point^2))
+			if ((abs(Li(6, i)-Lj_transf_RT(2, j)) > angle_thresh) || 
+		   (abs(Li(5, i)-Lj_transf_RT(1, j)) > rho_thresh) ||
+           (dist_pi_pj>max_dist_point^2))
+
 
 			dist(i, j) = Inf;
 		else
-			dist_pi_pj
+			dist_pi_pj;
 			% compute error
 			error_ij = Li(1:4, i) - Lj_transf(1:4, j);
+			%error_ij = computeError(1,T, [Li(1:4, i); Lj_transf(1:4, j)]);
 
 			% ls error function
 			ls_error = error_ij'*sigma_ij*error_ij;
@@ -50,6 +57,7 @@ for i=1:size(Li, 2)
 
 			% set current distance
 			dist(i, j) = ls_error;
+			
 		endif
 	endfor
 
