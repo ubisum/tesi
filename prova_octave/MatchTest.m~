@@ -57,7 +57,7 @@ for i=1:iterations
 	ne_j(1:2, :) = Lj(3:4, :);
 	ne_j(3:6, :) = Lj(7:10, :);
 	temp_dist = computeDistanceNM (ne_i, ne_j, alpha_factor, point_factor, T);
-	dist
+	%dist
 	
 
 	% associations

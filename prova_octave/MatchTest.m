@@ -24,8 +24,10 @@ point_factor = .5;
 % ex_1_y
 % ex_2_x
 % ex_2_y
-Pi = readFromFile("convertedLines_0.txt");
-Pj = readFromFile("convertedLines_1.txt");
+%Pi = readFromFile("convertedLines_0.txt");
+%Pj = readFromFile("convertedLines_1.txt");
+Pi = readFromFile("convertedLines_1.txt");
+Pj = readFromFile("convertedLines_2.txt");
 printLines(Pi(7:10, :), 'Pi.txt', eye(3));
 printLines(Pj(7:10, :), 'Pj_original.txt', eye(3));
 %Pj = Pi;

@@ -175,4 +175,6 @@ int main(int argv, char** argc)
         cout << "Extracted lines: " << extractedLines.size() << endl;
         printLines(extractedLines[first], first);
         printLines(extractedLines[second], second);
+        printLines(extractedLines[2], 2);
+        printLines(extractedLines[3], 3);
 }

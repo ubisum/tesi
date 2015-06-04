@@ -55,12 +55,12 @@ function [assoc] = computeAssociations(dist, last2_thresh)
 	endif
 
 
-
+assoc;
 % repeated associations
-rep = findRep(assoc(:, 2));
+rep = findRep(assoc)
 size(rep);
- %remove repeated associations
-
+%remove repeated associations
+%%{
 for k=1:size(rep, 2)
 	temp_indeces = rep{1, k};
 
@@ -69,5 +69,8 @@ for k=1:size(rep, 2)
 		assoc(temp_indeces, :) = [];
 	%endfor
 endfor
+%%}
 
+%new_assoc = deleteRepAssocs(dist, rep, assoc);
+assoc = new_assoc;
 endfunction
