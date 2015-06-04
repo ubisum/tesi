@@ -16,11 +16,16 @@ function [assoc] = computeAssociations(dist, last2_thresh)
 			% index of minimum value
 			min_index = find(row == min_row);
 
-			if(size(min_index, 2) == 1 && min_index != inf)
+			if(size(min_index, 2) == 1 && min_row != inf)
 				% build a reduced row
 				red_row = zeros(1, size(dist, 2)-1);
-				red_row(1, 1:min_index-1) = row(1, 1:min_index-1);
-				red_row(1, min_index:size(dist, 2)-1) = row(1, min_index+1:size(dist, 2));
+				if(min_index != 1)
+					red_row(1, 1:min_index-1) = row(1, 1:min_index-1);
+				endif
+
+				if(min_index != size(row, 2))
+					red_row(1, min_index:size(dist, 2)-1) = row(1, min_index+1:size(dist, 2));
+				endif
 
 				% new minimum value
 				red_row_min = min(min(red_row));
@@ -48,5 +53,21 @@ function [assoc] = computeAssociations(dist, last2_thresh)
 	%else
 		%assoc = [assoc; 1 1];
 	endif
+
+
+assoc
+% repeated associations
+rep = findRep(assoc(:, 2));
+size(rep);
+ %remove repeated associations
+
+for k=1:size(rep, 2)
+	temp_indeces = rep{1, k};
+
+	%for z=1:size(temp_indeces, 1)
+		%elem = temp_indeces(z, 1)
+		assoc(temp_indeces, :) = [];
+	%endfor
+endfor
 
 endfunction
