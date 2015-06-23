@@ -38,7 +38,7 @@ function [assoc] = computeAssociations(dist, last2_thresh)
 					ref_thresh = red_row_min - min_row;
 				endif
 
-				if(ref_thresh < last2_thresh)
+				if(ref_thresh < last2_thresh || ref_thresh == min_row)
 					% association
 					assoc = [assoc; i min_index];
 					chosen = [chosen; min_row];
@@ -55,22 +55,32 @@ function [assoc] = computeAssociations(dist, last2_thresh)
 	endif
 
 
-assoc;
+
 % repeated associations
-rep = findRep(assoc)
-size(rep);
-%remove repeated associations
+rep = findRep(assoc);
+temp_indeces = [];
 %%{
 for k=1:size(rep, 2)
+	temp_mat = rep{1,k};
+	temp_indeces = [temp_indeces; temp_mat];
+endfor
+assoc(temp_indeces, :) = [];
+%%}
+%remove repeated associations
+%{
+for k=1:size(rep, 2)
 	temp_indeces = rep{1, k};
+	size(temp_indeces);
+	temp_indeces
+	assoc
 
 	%for z=1:size(temp_indeces, 1)
 		%elem = temp_indeces(z, 1)
 		assoc(temp_indeces, :) = [];
 	%endfor
 endfor
-%%}
+%}
 
 %new_assoc = deleteRepAssocs(dist, rep, assoc);
-assoc = new_assoc;
+%assoc = new_assoc;
 endfunction

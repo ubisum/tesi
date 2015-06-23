@@ -18,7 +18,7 @@ end
 % create a guess transform
 %x_ideal=[20,30,pi/2]';
 %x_ideal = [ 1.3635, 0, 0]';
-x_ideal=[20,30,0]';
+x_ideal=[20,30,pi/4]';
 
 % get the homogeneous matrix
 X_ideal=v2t(x_ideal);

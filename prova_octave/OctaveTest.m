@@ -8,7 +8,7 @@ for i=1:size(P,2)
 end
 #}
 
-P = readFromFile("convertedLines.txt");
+P = readFromFile("convertedLines_0.txt");
 for i=1:size(P,2)
 	n_i = P(3:4,i);
 	n_i *= 1./norm(n_i);

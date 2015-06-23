@@ -2,14 +2,14 @@
 epsilon = 0.5;
 alpha = 0.5;
 last2_thresh = 0.2;
-angle_thresh = 0.1;
-rho_thresh = 0.1;
+angle_thresh = 0.5;
+rho_thresh = 0.5;
 iterations = 50;
-max_dist_point = 0.1;
+max_dist_point = 1.5;
 e_max = 1;
 
-alpha_factor = .5;
-point_factor = .5;
+alpha_factor = .1;
+point_factor = .4;
 
 % read data
 % content of a column in Li or Lj:
@@ -26,6 +26,9 @@ point_factor = .5;
 % ex_2_y
 Pi = readFromFile("convertedLines_0.txt");
 Pj = readFromFile("convertedLines_1.txt");
+%Pi = readFromFile("convertedLines_1.txt");
+%Pj = readFromFile("convertedLines_2.txt");
+size(Pj);
 printLines(Pi(7:10, :), 'Pi.txt', eye(3));
 printLines(Pj(7:10, :), 'Pj_original.txt', eye(3));
 %Pj = Pi;
@@ -43,9 +46,13 @@ Lj = Pj(1:10, :);
 %Lj = Lj_temp(1:4, 1:size(Li, 2));
 assoc = [];
 dist = [];
+%remove("/home/ubisum/tesi/prova_octave/prova/gnuplot.txt");
+fid_gnuplot = fopen("/home/ubisum/tesi/prova_octave/prova/gnuplot.txt", 'w');
+fprintf(fid_gnuplot, "plot ");
 
 % loop
 for i=1:iterations
+i
 	% matrix of distances
 	%[dist, gamma_sqr] = computeDistanceError(Li, Lj, T, epsilon, alpha, e_max, angle_thresh, rho_thresh, max_dist_point);
 	%dist = computeDistanceRT(Li(5:6, :), Lj(5:6, :), T);
@@ -56,7 +63,11 @@ for i=1:iterations
 	ne_i(3:6, :) = Li(7:10, :);
 	ne_j(1:2, :) = Lj(3:4, :);
 	ne_j(3:6, :) = Lj(7:10, :);
-	temp_dist = computeDistanceNM (ne_i, ne_j, alpha_factor, point_factor, T);
+	rho_theta_i = Li(5:6, :);
+	rho_theta_j = Lj(5:6, :);
+	points_pi = Li(1:2, :);
+	points_pj = Lj(1:2, :);
+	temp_dist = computeDistanceNM (ne_i, ne_j, alpha_factor, point_factor, inv(T), rho_theta_i, rho_theta_j, angle_thresh, rho_thresh,     									   points_pi, points_pj, max_dist_point);
 	%dist
 	
 
@@ -67,7 +78,7 @@ for i=1:iterations
 		break;
 	else
 		assoc = temp_assoc;
-		dist= temp_dist;
+		dist = temp_dist;
 	endif
 
 	% new homogeneous matrix
@@ -92,10 +103,19 @@ for i=1:iterations
 	Lj = temp_lj;
 
 	%Z = compose_Z(Li, Lj, assoc);
-	Z = [Li; Lj];
+	Z = [Li(1:4,:); Lj(1:4,:)];
 	gamma_sqr = 1;
-	[xnew, chiNew]=lsIteration_gamma(t2v(T),Z, epsilon, alpha, gamma_sqr);
+	[xnew, chiNew]=lsIteration_gamma(t2v(inv(T)),Z, epsilon, alpha, gamma_sqr);
+	xnew	
+	%chiNew
+	printf("Associazioni: %f\n\n",size(assoc, 1));
 	T = v2t(xnew);
+	s = sprintf("/home/ubisum/tesi/prova_octave/prova/prova_%d.txt", i);
+	s_file = sprintf("'prova_%d.txt w l',", i);
+	fprintf(fid_gnuplot, s_file);
+	printLines(Pj(7:10, :), s, inv(T));
+	
+	%delete
 	
 endfor
 

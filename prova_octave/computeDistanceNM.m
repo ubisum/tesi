@@ -1,7 +1,23 @@
-function dist = computeDistanceNM (ne_i, ne_j, alpha_factor, point_factor, T)
+function dist = computeDistanceNM (ne_i, ne_j, alpha_factor, point_factor, T, rho_theta_i, rho_theta_j, angle_thresh, rho_thresh, points_pi,
+                                   points_pj, max_dist_point)
 
 % output
 dist = zeros(size(ne_i, 2), size(ne_j, 2));
+
+% transform rho_theta_j
+rho_theta_j_transf = transformRT(rho_theta_j, T);
+
+% transform n_j
+ne_j_transf = T*[ne_j(1:2, :); ones(1, size(ne_j, 2))];
+%ne_j_transf = [ne_j_transf; ne_j(3:6, :)];
+
+% transform points
+points_j_transf = [points_pj; ones(1, size(points_pj, 2))];
+points_j_transf = T*points_j_transf;
+transf_ex1 = T*[ne_j(3:4,:); ones(1, size(ne_j, 2))];
+transf_ex2 = T*[ne_j(5:6,:); ones(1, size(ne_j, 2))];
+
+ne_j_transf = [ne_j_transf; transf_ex1(1:2, :); transf_ex2(1:2,:)];
 
 for i=1:size(ne_i, 2)
 	col_i = ne_i(:, i);
@@ -10,6 +26,9 @@ for i=1:size(ne_i, 2)
 
 	for j=1:size(ne_j, 2)
 		col_j = ne_j(:, j);
+		%col_j = ne_j_transf(:, j);
+		size(col_j);
+			
 %		temp_mid_j = 0.5*[ne_j(3)+ne_j(5) ne_j(4)+ne_j(6)]';
 %		mid_j_rot = T*[temp_mid_j; 1];
 %		mid_j = mid_j_rot(1:2, :);
@@ -22,10 +41,20 @@ for i=1:size(ne_i, 2)
 
 		dist_n = n_i-n_j;
 		dist_m = mid_i-mid_j;
+		dist_points_ij = points_pi(1:2,i)-points_j_transf(1:2, j);
 		%size(dist_n)
 		%size(dist_m)
 		%size(alpha_factor*(dist_n'*dist_n) + point_factor*(dist_m'*dist_m))
 		dist(i,j) = alpha_factor*(dist_n'*dist_n) + point_factor*(dist_m'*dist_m);
+		%{
+		if(rho_theta_i(1,i) - rho_theta_j_transf(1,j) < rho_thresh || rho_theta_i(2,i) - rho_theta_j_transf(2,j) < angle_thresh
+			|| dist_points_ij'*dist_points_ij < max_dist_point)
+			dist(i,j) = alpha_factor*(dist_n'*dist_n) + point_factor*(dist_m'*dist_m);
+
+		else
+			dist(i,j) = inf;
+		endif
+		%}
 	endfor
 endfor
 
