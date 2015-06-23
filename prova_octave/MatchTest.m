@@ -105,7 +105,8 @@ i
 	%Z = compose_Z(Li, Lj, assoc);
 	Z = [Li(1:4,:); Lj(1:4,:)];
 	gamma_sqr = 1;
-	[xnew, chiNew]=lsIteration_gamma(t2v(inv(T)),Z, epsilon, alpha, gamma_sqr);
+	%[xnew, chiNew]=lsIteration_gamma(t2v(inv(T)),Z, epsilon, alpha, gamma_sqr);
+	[xnew, chiNew]=lsIteration_gamma(t2v(T),Z, epsilon, alpha, gamma_sqr);
 	xnew	
 	%chiNew
 	printf("Associazioni: %f\n\n",size(assoc, 1));
