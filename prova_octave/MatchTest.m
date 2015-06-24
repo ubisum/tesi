@@ -129,8 +129,8 @@ original_extremes = Lj(7:10, :);
 transf_pj = [];
 for counter=1:size(Lj, 2)
 	coords = original_extremes(:, counter);
-	up_transf = T*[coords(1) coords(2) 1]';
-	lw_transf = T*[coords(3) coords(4) 1]';
+	up_transf = inv(T)*[coords(1) coords(2) 1]';
+	lw_transf = inv(T)*[coords(3) coords(4) 1]';
 	transf_coords = [up_transf(1) up_transf(2) lw_transf(1) lw_transf(2)];
 	transf_pj = [transf_pj transf_coords'];
 endfor
@@ -171,7 +171,7 @@ for ass_count=1:size(Li, 2)
 	middle_point_i = 0.5*[left_line(1)+left_line(3) left_line(2)+left_line(4)];
 	middle_point_j = 0.5*[right_line(1)+right_line(3) right_line(2)+right_line(4)];
 
-	transf_mp_j = T*[middle_point_j'; 1];
+	transf_mp_j = inv(T)*[middle_point_j'; 1];
 	distance = [middle_point_i(1)-transf_mp_j(1) middle_point_i(2)-transf_mp_j(2)]*[middle_point_i(1)-transf_mp_j(1) middle_point_i(2)-transf_mp_j(2)]';
 	%if(distance<max_dist_point)
 		fprintf(fid_assoc, "%f\t%f\n%f\t%f\n\n", middle_point_i(1), middle_point_i(2), transf_mp_j(1), transf_mp_j(2));
@@ -180,6 +180,6 @@ endfor
 fclose(fid_assoc);
 
 T;
-printLines(Pj(7:10, :), 'Pj.txt', T);
+printLines(Pj(7:10, :), 'Pj.txt', inv(T));
 printf("FATTO\n");
 
