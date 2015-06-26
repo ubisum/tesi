@@ -1,7 +1,7 @@
 % CONSTANTS
 epsilon = 0.5;
 alpha = 0.5;
-last2_thresh = 0.2;
+last2_thresh = 0.5;
 angle_thresh = 0.5;
 rho_thresh = 0.5;
 iterations = 50;
@@ -35,15 +35,11 @@ printLines(Pj(7:10, :), 'Pj_original.txt', eye(3));
 
 % initial homogeneous matrix
 T = eye(3);
-%T = v2t([0.1 0.1 0.05]);
-%T = v2t([0 0 -0.300524]);
 
 % initial matrices
 Li = Pi(1:10, :);
-%size(Li)
-%Lj = Li;
 Lj = Pj(1:10, :);
-%Lj = Lj_temp(1:4, 1:size(Li, 2));
+
 assoc = [];
 dist = [];
 %remove("/home/ubisum/tesi/prova_octave/prova/gnuplot.txt");
@@ -52,7 +48,7 @@ fprintf(fid_gnuplot, "plot ");
 
 % loop
 for i=1:iterations
-i
+
 	% matrix of distances
 	%[dist, gamma_sqr] = computeDistanceError(Li, Lj, T, epsilon, alpha, e_max, angle_thresh, rho_thresh, max_dist_point);
 	%dist = computeDistanceRT(Li(5:6, :), Lj(5:6, :), T);
@@ -67,7 +63,7 @@ i
 	rho_theta_j = Lj(5:6, :);
 	points_pi = Li(1:2, :);
 	points_pj = Lj(1:2, :);
-	temp_dist = computeDistanceNM (ne_i, ne_j, alpha_factor, point_factor, inv(T), rho_theta_i, rho_theta_j, angle_thresh, rho_thresh,     									   points_pi, points_pj, max_dist_point);
+	temp_dist = computeDistanceNM (ne_i, ne_j, alpha_factor, point_factor, inv(T), rho_theta_i, rho_theta_j, angle_thresh, rho_thresh,     									   points_pi, points_pj, max_dist_point)
 	%dist
 	
 
@@ -92,24 +88,39 @@ i
 	temp_lj = [];
 
 	%size(assoc)
-
+	Z = compose_Z(Li, Lj, assoc);
+	assoc
 	for j=1:size(assoc, 1)
 		assoc_row = assoc(j, :);
-		temp_li = [temp_li Li(1:10, assoc_row(1,1))];
-		temp_lj = [temp_lj Lj(1:10, assoc_row(1,2))];
+		temp_li = [temp_li Li(1:10, assoc_row(1))];
+		temp_lj = [temp_lj Lj(1:10, assoc_row(2))];
 	endfor
 
 	Li = temp_li;
 	Lj = temp_lj;
 
 	%Z = compose_Z(Li, Lj, assoc);
-	Z = [Li(1:4,:); Lj(1:4,:)];
+	%Z = [Li(1:4,:); Lj(1:4,:)];
 	gamma_sqr = 1;
-	%[xnew, chiNew]=lsIteration_gamma(t2v(inv(T)),Z, epsilon, alpha, gamma_sqr);
+	printf("vecchia:\n");
+	xold=t2v(inv(T));
+	x_ref = t2v(T);
+	
+	%disp(xold);
+	%for k=1:100
 	[xnew, chiNew]=lsIteration_gamma(t2v(T),Z, epsilon, alpha, gamma_sqr);
-	xnew	
+	%endfor
+	%{
+	[xnew, chiNew]=lsIteration_gamma(xold,Z, epsilon, alpha, gamma_sqr);
+	[xnew, chiNew]=lsIteration_gamma(xnew,Z, epsilon, alpha, gamma_sqr);
+	[xnew, chiNew]=lsIteration_gamma(xnew,Z, epsilon, alpha, gamma_sqr);
+	%}
+	printf("ottimizzata:\n");
+	%disp(xnew);
+	xnew;
+	
 	%chiNew
-	printf("Associazioni: %f\n\n",size(assoc, 1));
+	%printf("Associazioni: %f\n\n",size(assoc, 1));
 	T = v2t(xnew);
 	s = sprintf("/home/ubisum/tesi/prova_octave/prova/prova_%d.txt", i);
 	s_file = sprintf("'prova_%d.txt w l',", i);

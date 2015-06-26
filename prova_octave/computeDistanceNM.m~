@@ -25,8 +25,8 @@ for i=1:size(ne_i, 2)
 	n_i = col_i(1:2, :);
 
 	for j=1:size(ne_j, 2)
-		%col_j = ne_j(:, j);
-		col_j = ne_j_transf(:, j);
+		col_j = ne_j(:, j);
+		%col_j = ne_j_transf(:, j);
 		size(col_j);
 			
 %		temp_mid_j = 0.5*[ne_j(3)+ne_j(5) ne_j(4)+ne_j(6)]';
@@ -45,8 +45,8 @@ for i=1:size(ne_i, 2)
 		%size(dist_n)
 		%size(dist_m)
 		%size(alpha_factor*(dist_n'*dist_n) + point_factor*(dist_m'*dist_m))
-		dist(i,j) = alpha_factor*(dist_n'*dist_n) + point_factor*(dist_m'*dist_m);
-		%{
+		%dist(i,j) = alpha_factor*(dist_n'*dist_n) + point_factor*(dist_m'*dist_m);
+		%%{
 		if(rho_theta_i(1,i) - rho_theta_j_transf(1,j) < rho_thresh || rho_theta_i(2,i) - rho_theta_j_transf(2,j) < angle_thresh
 			|| dist_points_ij'*dist_points_ij < max_dist_point)
 			dist(i,j) = alpha_factor*(dist_n'*dist_n) + point_factor*(dist_m'*dist_m);
@@ -54,7 +54,7 @@ for i=1:size(ne_i, 2)
 		else
 			dist(i,j) = inf;
 		endif
-		%}
+		%%}
 	endfor
 endfor
 

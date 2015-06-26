@@ -17,7 +17,7 @@ function [xNew, chi]=lsIteration_gamma(x,Z, epsilon, alpha, gamma_sq)
 
 		% compute matrix for line rotation
 		normal = Z(3:4, i);
-		r_i = [normal(1) -normal(2); normal(2) normal(1)];
+		r_i = [normal(1) -normal(2); normal(2) normal(1)]';
 
 		% covariance matrices
 		sigma_pi = r_i*[1 0; 0 epsilon]*r_i';
@@ -26,7 +26,7 @@ function [xNew, chi]=lsIteration_gamma(x,Z, epsilon, alpha, gamma_sq)
 		sigma_ij(3:4, 3:4) = alpha*eye(2);
 
 		% scale covariance matrix
-		%sigma_ij *= gamma_sq;
+		sigma_ij *= gamma_sq;
 
 		% local matrices
 		h_ij = J'*sigma_ij*J;

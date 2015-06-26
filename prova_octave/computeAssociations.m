@@ -55,7 +55,7 @@ function [assoc] = computeAssociations(dist, last2_thresh)
 	endif
 
 
-assoc
+assoc;
 % repeated associations
 rep = findRep(assoc);
 temp_indeces = [];
