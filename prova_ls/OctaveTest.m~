@@ -40,6 +40,7 @@ x=[0,0,0]';
 % run the algorithm and get the chi2
 [xes, chis] = lsLoop(x,Z,100);
 %chis
-%xes
+xes(:, 100)
 printLines(P(7:10, :), "P.txt", eye(3));
 printLines(Pt(7:10, :), "Pt.txt", v2t(xes(:, 100)));
+printLines(Pt(7:10, :), "Pt_originals.txt", eye(3));

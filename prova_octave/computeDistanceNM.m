@@ -8,14 +8,17 @@ dist = zeros(size(ne_i, 2), size(ne_j, 2));
 rho_theta_j_transf = transformRT(rho_theta_j, T);
 
 % transform n_j
-ne_j_transf = T*[ne_j(1:2, :); ones(1, size(ne_j, 2))];
+%ne_j_transf = T*[ne_j(1:2, :); ones(1, size(ne_j, 2))];
+ne_j_transf = T(1:2,1:2)*ne_j(1:2, :);
 %ne_j_transf = [ne_j_transf; ne_j(3:6, :)];
 
 % transform points
-points_j_transf = [points_pj; ones(1, size(points_pj, 2))];
-points_j_transf = T*points_j_transf;
-transf_ex1 = T*[ne_j(3:4,:); ones(1, size(ne_j, 2))];
-transf_ex2 = T*[ne_j(5:6,:); ones(1, size(ne_j, 2))];
+%points_j_transf = [points_pj; ones(1, size(points_pj, 2))];
+%points_j_transf = T*points_j_transf;
+%transf_ex1 = T*[ne_j(3:4,:); ones(1, size(ne_j, 2))];
+%transf_ex2 = T*[ne_j(5:6,:); ones(1, size(ne_j, 2))];
+transf_ex1 = T(1:2, 1:2)*ne_j(3:4, :) + repmat(T(1:2,3), 1, size(ne_j,2));
+transf_ex2 = T(1:2, 1:2)*ne_j(5:6, :) + repmat(T(1:2,3), 1, size(ne_j,2));
 
 ne_j_transf = [ne_j_transf; transf_ex1(1:2, :); transf_ex2(1:2,:)];
 
@@ -25,8 +28,8 @@ for i=1:size(ne_i, 2)
 	n_i = col_i(1:2, :);
 
 	for j=1:size(ne_j, 2)
-		col_j = ne_j(:, j);
-		%col_j = ne_j_transf(:, j);
+		%col_j = ne_j(:, j);
+		col_j = ne_j_transf(:, j);
 		size(col_j);
 			
 %		temp_mid_j = 0.5*[ne_j(3)+ne_j(5) ne_j(4)+ne_j(6)]';
@@ -41,7 +44,7 @@ for i=1:size(ne_i, 2)
 
 		dist_n = n_i-n_j;
 		dist_m = mid_i-mid_j;
-		dist_points_ij = points_pi(1:2,i)-points_j_transf(1:2, j);
+		%dist_points_ij = points_pi(1:2,i)-points_j_transf(1:2, j);
 		%size(dist_n)
 		%size(dist_m)
 		%size(alpha_factor*(dist_n'*dist_n) + point_factor*(dist_m'*dist_m))

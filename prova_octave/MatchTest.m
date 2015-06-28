@@ -1,10 +1,10 @@
 % CONSTANTS
-epsilon = 0.5;
-alpha = 0.5;
-last2_thresh = 0.5;
+epsilon = 0.1;
+alpha = 0.1;
+last2_thresh = 0.8;
 angle_thresh = 0.5;
 rho_thresh = 0.5;
-iterations = 50;
+iterations = 2;
 max_dist_point = 1.5;
 e_max = 1;
 
@@ -63,7 +63,7 @@ for i=1:iterations
 	rho_theta_j = Lj(5:6, :);
 	points_pi = Li(1:2, :);
 	points_pj = Lj(1:2, :);
-	temp_dist = computeDistanceNM (ne_i, ne_j, alpha_factor, point_factor, inv(T), rho_theta_i, rho_theta_j, angle_thresh, rho_thresh,     									   points_pi, points_pj, max_dist_point)
+	temp_dist = computeDistanceNM (ne_i, ne_j, alpha_factor, point_factor, inv(T), rho_theta_i, rho_theta_j, angle_thresh, rho_thresh,     									   points_pi, points_pj, max_dist_point);
 	%dist
 	
 
@@ -88,8 +88,12 @@ for i=1:iterations
 	temp_lj = [];
 
 	%size(assoc)
-	Z = compose_Z(Li, Lj, assoc);
+	printf("matrici L\n");
+	Li(1:4, :)
+	Lj(1:4, :)
 	assoc
+	Z = compose_Z(Li, Lj, assoc)
+	
 	for j=1:size(assoc, 1)
 		assoc_row = assoc(j, :);
 		temp_li = [temp_li Li(1:10, assoc_row(1))];
@@ -190,7 +194,7 @@ for ass_count=1:size(Li, 2)
 endfor
 fclose(fid_assoc);
 
-T;
+inv(T)
 printLines(Pj(7:10, :), 'Pj.txt', inv(T));
 printf("FATTO\n");
 
