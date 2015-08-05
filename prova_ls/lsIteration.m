@@ -18,6 +18,8 @@ function [xNew, chi]=lsIteration(x,Z, epsilon, alpha)
 		% compute matrix for line rotation
 		normal = Z(3:4, i);
 		r_i = [normal(1) -normal(2); normal(2) normal(1)];
+		%t_point = transformPoints(X, Z(5:8,i));
+		%r_i = [t_point(3) -t_point(4); t_point(4) t_point(3)];
 
 		% covariance matrices
 		sigma_pi = r_i*[1 0; 0 epsilon]*r_i';
@@ -37,7 +39,8 @@ function [xNew, chi]=lsIteration(x,Z, epsilon, alpha)
 	end
 
 	% update global matrices
-	dx=-H\b;
+	%dx=-H\b;
+	dx = H\-b;
 	dX = v2t(dx);
 	xNew = t2v(dX*X);
 

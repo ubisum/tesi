@@ -109,6 +109,43 @@ vector<vecPairsList> selectLines(const vector<vecPairsList> lines)
     return selectedLines;
 }
 
+void printLines(vecPairsList Lines, int index)
+{
+    cout << "entrata" << endl;
+    stringstream ss_filename;
+    ss_filename << "convertedLines_" << index << ".txt";
+
+    remove(ss_filename.str().c_str());
+    FILE* fid = fopen(ss_filename.str().c_str(), "a");
+    cout << "prima for" << endl;
+
+    for(int counter = 0; counter<(int)Lines.size(); counter++)
+    {
+        // a line
+        vecPair vp = Lines[counter];
+        Vector2f ex_1 = vp.first;
+        Vector2f ex_2 = vp.second;
+
+        // line representation
+        Vector4f lineRep = lineRepresentation(vp.first, vp.second);
+
+        // line's polar form
+        Vector2f polar = polarRepresentation(vp.first, vp.second);
+
+        // prepare a stringstream
+        stringstream ss_lines;
+
+        // write to file
+        ss_lines << lineRep(0)<<  "\t" << lineRep(1) << "\t" << lineRep(2) << "\t" << lineRep(3) << "\t" <<
+                    polar(0) << "\t" << polar(1) << "\t" <<
+                    ex_1(0) << "\t" << ex_1(1) << "\t" <<
+                    ex_2(0) << "\t" << ex_2(1) << "\n";
+        fputs(ss_lines.str().c_str(), fid);
+
+    }
+
+}
+
 }
 
 #endif // MISC_UTILITIES_H

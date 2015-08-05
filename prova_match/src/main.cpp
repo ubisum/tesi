@@ -25,42 +25,7 @@ void findPoses(vector<completeInformation> ci){
     }
 }
 
-void printLines(vecPairsList Lines, int index)
-{
-    cout << "entrata" << endl;
-    stringstream ss_filename;
-    ss_filename << "convertedLines_" << index << ".txt";
 
-    remove(ss_filename.str().c_str());
-    FILE* fid = fopen(ss_filename.str().c_str(), "a");
-    cout << "prima for" << endl;
-
-    for(int counter = 0; counter<(int)Lines.size(); counter++)
-    {
-        // a line
-        vecPair vp = Lines[counter];
-        Vector2f ex_1 = vp.first;
-        Vector2f ex_2 = vp.second;
-
-        // line representation
-        Vector4f lineRep = lineRepresentation(vp.first, vp.second);
-
-        // line's polar form
-        Vector2f polar = polarRepresentation(vp.first, vp.second);
-
-        // prepare a stringstream
-        stringstream ss_lines;
-
-        // write to file
-        ss_lines << lineRep(0)<<  "\t" << lineRep(1) << "\t" << lineRep(2) << "\t" << lineRep(3) << "\t" <<
-                    polar(0) << "\t" << polar(1) << "\t" <<
-                    ex_1(0) << "\t" << ex_1(1) << "\t" <<
-                    ex_2(0) << "\t" << ex_2(1) << "\n";
-        fputs(ss_lines.str().c_str(), fid);
-
-    }
-
-}
 
 int main(int argv, char** argc)
 {
@@ -68,7 +33,11 @@ int main(int argv, char** argc)
     vector<Vector2fVector> scanLines;
     vector<vecPairsList> extractedLines;
     vector<pair<Vector2f, Vector2f> > extremesCouples;
+
+    // read robot's info from file
     parseRobotInfo("/home/ubisum/tesi/prova_match/files/robotInfo.txt", parsed_info);
+
+    // select relevant frames
     ci = selectFrames(parsed_info);
 
 
@@ -84,31 +53,38 @@ int main(int argv, char** argc)
         stringstream file_name;
         FILE* openFile;
 
-        if(k>=down && k<up)
+        /*if(k>=down && k<up)
         {
             file_name << "points_" << k << ".txt";
             openFile = fopen(file_name.str().c_str(), "a");
-        }
+        }*/
 
         for (int i = 0; i < (int)ci[k].points.size(); i++)
         {
+            // extract a coordinate of a scan's point
             coordinate coord = ci[k].points[i];
             float xCoord = coord.first;
             float yCoord = coord.second;
 
-            if(k>=down && k<up)
+            /*if(k>=down && k<up)
             {
                 stringstream ss;
                 ss << xCoord << "\t" << yCoord << "\n";
                 fputs(ss.str().c_str(), openFile);
-            }
+            }*/
 
+            // create a vector with extracted coordinate
             Vector2f v;
             v << xCoord, yCoord;
+
+            // store vector
             vector.push_back(v);
         }
 
+        // store points of current scan
         scanLines.push_back(vector);
+
+        // extract lines for current scan and store them
         extractedLines.push_back(computeLines(vector));
     }
 
@@ -163,18 +139,25 @@ int main(int argv, char** argc)
         int second = 1;
         selectLines(extractedLines);
 
-        cout << "Differenze: " << "\n" << ci[first].position.first << "\t" << ci[second].position.first << "\t" <<
+        /*cout << "Differenze: " << "\n" << ci[first].position.first << "\t" << ci[second].position.first << "\t" <<
                 ci[second].position.first-ci[first].position.first << "\n" <<
                 ci[first].position.second << "\t" << ci[second].position.second << "\t" <<
                 ci[second].position.second-ci[first].position.second << "\n" <<
                 ci[first].angle << "\t" << ci[second].angle << "\t" <<
-                ci[second].angle-ci[first].angle << endl;
+                ci[second].angle-ci[first].angle << endl; */
     //}
+        cout << "DATI: " << endl;
+        cout << ci[1].position.first-ci[first].position.first << "\n" <<
+                ci[1].position.second-ci[first].position.second << "\n" <<
+                ci[1].angle-ci[first].angle << endl;
 
-        cout << "print" << endl;
-        cout << "Extracted lines: " << extractedLines.size() << endl;
+        //cout << "print" << endl;
+        //cout << "Extracted lines: " << extractedLines.size() << endl;
         printLines(extractedLines[first], first);
         printLines(extractedLines[second], second);
         printLines(extractedLines[2], 2);
         printLines(extractedLines[3], 3);
+
+        cout << "parsed info " << parsed_info.size() << endl;
+        cout << "ci " << ci.size() << endl;
 }

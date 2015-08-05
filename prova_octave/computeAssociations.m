@@ -19,12 +19,25 @@ function [assoc] = computeAssociations(dist, last2_thresh)
 			if(size(min_index, 2) == 1 && min_row != inf)
 				% build a reduced row
 				red_row = zeros(1, size(dist, 2)-1);
+				%{
 				if(min_index != 1)
 					red_row(1, 1:min_index-1) = row(1, 1:min_index-1);
 				endif
 
 				if(min_index != size(row, 2))
 					red_row(1, min_index:size(dist, 2)-1) = row(1, min_index+1:size(dist, 2));
+				endif
+				%}
+
+				if(min_index == 1)
+					red_row = row(1, 2:size(row,2));
+				
+				elseif(min_index == size(row,2))
+					red_row = row(1, 1:size(row,2)-1);
+
+				else
+					red_row(1, 1:min_index-1) = row(1, 1:min_index-1);
+					red_row(1, min_index:size(red_row,2)) = row(1, min_index+1:size(row,2));
 				endif
 
 				% new minimum value
